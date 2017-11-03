@@ -20,7 +20,7 @@ in pkgs.stdenv.mkDerivation {
       --incremental \
       --to revealjs \
       --output index.html \
-      talk.md
+      slides/*.md
   '';
 
   installPhase = ''
