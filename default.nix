@@ -2,6 +2,7 @@ with import <nixpkgs> {};
 
 let
   slides-src = ./slides;
+  graphs-src = ./graphs;
   img-src = ./img;
 
   revealjs-src = fetchFromGitHub {
@@ -14,9 +15,14 @@ in stdenv.mkDerivation {
   name = "nixos-talk";
   src = slides-src;
 
-  nativeBuildInputs = [ pandoc ];
+  nativeBuildInputs = [ graphviz pandoc ];
 
   buildPhase = ''
+    mkdir graphs
+    for f in ${graphs-src}/*.dot; do
+      dot -Tpng $f > graphs/`basename $f .dot`.png
+    done
+
     pandoc \
       --standalone \
       --incremental \
@@ -29,6 +35,7 @@ in stdenv.mkDerivation {
   installPhase = ''
     mkdir $out
     cp index.html $out/
+    cp -r graphs/ $out/
     ln -s ${img-src} $out/img
   '';
 }
