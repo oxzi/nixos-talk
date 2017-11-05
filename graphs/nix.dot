@@ -1,0 +1,8 @@
+digraph pm_nix {
+  bs [label="Build script"];
+  pm [label="Package manager",shape=box];
+  nix [label="Nix store"];
+
+  bs -> pm;
+  pm -> nix;
+}
