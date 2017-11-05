@@ -1,32 +1,34 @@
-{ pkgs ? import <nixpkgs> {} }:
+with import <nixpkgs> {};
 
 let
-  revealjs-version = "3.5.0";
-in pkgs.stdenv.mkDerivation {
+  slides-src = ./slides;
+  img-src = ./img;
+
+  revealjs-src = fetchFromGitHub {
+    owner = "hakimel";
+    repo = "reveal.js";
+    rev = "3.5.0";
+    sha256 = "0aj6y16d2wnncmamlqzimcnh56q755h62jw1g0i05ik79l97175w";
+  };
+in stdenv.mkDerivation {
   name = "nixos-talk";
-  src = ./.;
+  src = slides-src;
 
-  nativeBuildInputs = with pkgs; [ git pandoc ];
-
-  patchPhase = ''
-    cd reveal.js/
-    git checkout ${revealjs-version}
-    cd ..
-  '';
+  nativeBuildInputs = [ pandoc ];
 
   buildPhase = ''
     pandoc \
       --standalone \
       --incremental \
       --to revealjs \
+      --metadata=revealjs-url:${revealjs-src} \
       --output index.html \
-      slides/*.md
+      *.md
   '';
 
   installPhase = ''
     mkdir $out
     cp index.html $out/
-    cp -r img $out/
-    cp -r reveal.js $out/
+    ln -s ${img-src} $out/img
   '';
 }
