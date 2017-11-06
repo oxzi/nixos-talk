@@ -1,5 +1,10 @@
 # Nix
 
+# Nix?
+- another package manager
+- by Eelco Dolstra, part of his PhD research
+- for Linux and MacOS
+
 # Forget the FHS
 - Nix introduces `/nix/store/`
     - read-only storage for packages

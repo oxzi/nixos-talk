@@ -4,4 +4,5 @@
 # Content
 - Package managment
 - Nix
+- Nixpkgs
 - NixOS

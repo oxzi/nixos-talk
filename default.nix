@@ -27,7 +27,8 @@ in stdenv.mkDerivation {
       --standalone \
       --incremental \
       --to revealjs \
-      --metadata=revealjs-url:${revealjs-src} \
+      --variable=controls:false \
+      --variable=theme:white \
       --output index.html \
       *.md
   '';
@@ -36,6 +37,7 @@ in stdenv.mkDerivation {
     mkdir $out
     cp index.html $out/
     cp -r graphs/ $out/
-    ln -s ${img-src} $out/img
+    cp -r ${img-src} $out/img
+    cp -r ${revealjs-src} $out/reveal.js
   '';
 }
