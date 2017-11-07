@@ -6,6 +6,13 @@
     - branches for channels
     - PRs for updated/new packages
 
+# Phases
+- unpack, patch, configure, build, install, fixup, dist
+    - pre and post phases
+- can be extended or overridden
+    - arguments for phases or make, cmake, …
+    - Bash scripting
+
 #
 ```nix
 { stdenv, fetchurl }:
@@ -55,9 +62,43 @@ buildPythonPackage rec {
 }
 ```
 
-# Phases
-- unpack, patch, configure, build, install, fixup, dist
-    - pre and post phases
-- can be extended or overridden
-    - arguments for phases or make, cmake, …
-    - Bash scripting
+# Build system
+- can be used outside of nixpkgs
+- `nix-build`
+    - build script in Nix expression
+    - stores result in the Nix store
+- can be installed with `nix-env`
+
+#
+```nix
+{ pkgs ? import <nixpkgs> {} }:
+pkgs.stdenv.mkDerivation rec {
+  name = "et";
+  src = ./.;
+
+  buildInputs = with pkgs; [ libnotify gdk_pixbuf ];
+  nativeBuildInputs = [ pkgs.pkgconfig ];
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp et $out/bin
+    cp et-status.sh $out/bin/et-status
+  '';
+}
+```
+
+#
+```
+$ nix-build
+these derivations will be built:
+  /nix/store/d1lrjldnik6ycqra63ddyvi6rk5hmavd-et.drv
+. . . 
+/nix/store/jq4hmsmwf6bxl4hfm3p9ss2y412wr72m-et
+$ ls -l result
+lrwxrwxrwx . . . result -> /nix/store/jq4hm…412wr72m-et/
+$ find result/
+result/
+result/bin
+result/bin/et
+result/bin/et-status
+```
