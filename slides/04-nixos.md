@@ -75,3 +75,26 @@ services.nginx = {
 };
 ```
 
+# Containers
+- systemd-nspawn based containers
+- isolate service to a namespace container
+- own IP address or NAT
+- per default no internet access
+
+#
+```nix
+containers.webserver = {
+  privateNetwork = true;
+  hostAddress = "192.168.100.10";
+  localAddress = "192.168.100.11";
+
+  config = { config, pkgs, ... }: {
+    services.httpd = {
+      enable = true;
+      documentRoot = "/webroot";
+    };
+  };
+};
+```
+
+# That's it!
