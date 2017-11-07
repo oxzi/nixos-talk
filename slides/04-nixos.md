@@ -39,3 +39,39 @@ vi /mnt/etc/nixos/configuration.nix
 nixos-install
 reboot
 ```
+
+# configuration.nix
+- `configuration.nix` in Nix expression
+- services described in modules
+    - `services.tor.enable = true;`
+- `nixos-rebuild switch`
+
+# nixos-rebuild
+- `build`: generate new generation
+- `switch`: new generation and switch
+- `boot`: new generation after boot
+- `test`: switch, but don't `boot`
+- `build-vm`: QEMU-VM for new generation
+- `--rollback`: roll back to previous configuration
+
+#
+![[Source](https://nixos.org/nixos/about.html)](img/nixos-grub.png)
+
+#
+```nix
+services.nginx = {
+  enable = true;
+  virtualHosts."example.com" = {
+    forceSSL = true;
+    enableACME = true;
+    locations = {
+      "/" = {
+        root = "/var/www";
+        index = "index.php";
+      };
+      "/api/".proxyPass = http://localhost:2323;
+    };
+  };
+};
+```
+
